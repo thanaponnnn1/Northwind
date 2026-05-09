@@ -17,7 +17,7 @@ const envSchema = z.object({
   POLAR_WEBHOOK_SECRET: z.string().optional(),
   POLAR_API_BASE: z.string().url().default("https://api.polar.sh"),
 
-  POLAR_CHECKOUT_PRODUCT_ID: z.string(),
+  POLAR_CHECKOUT_PRODUCT_ID: z.string().optional(),
 
   STREAM_API_KEY: z.string().min(1),
   STREAM_API_SECRET: z.string().min(1),
@@ -34,10 +34,11 @@ export type Env = z.infer<typeof envSchema>;
 export function loadEnv() {
   const parsed = envSchema.safeParse(process.env);
 
-if (!parsed.success) {
-  console.warn("⚠️ ค้นพบข้อผิดพลาดใน Env แต่จะลองรันต่อ:", parsed.error.flatten().fieldErrors);
-  return process.env as unknown as Env; 
-}
+  if (!parsed.success) {
+    // ❌ แบบเดิม - warn แต่ return process.env ที่อาจไม่มี PORT ถูกต้อง
+    console.warn("⚠️ ENV errors:", parsed.error.flatten().fieldErrors);
+    return process.env as unknown as Env;
+  }
 
   return parsed.data;
 }
