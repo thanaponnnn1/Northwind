@@ -6,6 +6,8 @@ import { getEnv } from "./lib/env";
 import { clerkWebhookHandler } from "./webhooks/clerk";
 import path from "path";
 import fs from "fs";
+import { db } from "./db";  // ← เพิ่ม
+import { sql } from "drizzle-orm";  // ← เพิ่ม
 
 const PORT = Number(process.env.PORT) || 10000;
 
@@ -19,7 +21,6 @@ process.on("unhandledRejection", (reason) => {
   process.exit(1);
 });
 
-
 let env: ReturnType<typeof getEnv>;
 try {
   env = getEnv();
@@ -30,7 +31,6 @@ try {
 }
 
 const app = express();
-
 const rawJson = express.raw({ type: "application/json", limit: "1mb" });
 
 app.post("/webhooks/clerk", rawJson, (req, res) => {
@@ -40,7 +40,6 @@ app.post("/webhooks/clerk", rawJson, (req, res) => {
 app.use(express.json());
 app.use(cors());
 
-// ✅ ห่อ clerkMiddleware ด้วย try/catch
 try {
   app.use(clerkMiddleware);
   console.log("✅ Clerk middleware loaded");
@@ -72,6 +71,20 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-});
+// ✅ ทดสอบ DB ก่อน start server
+async function startServer() {
+  try {
+    console.log("🔌 Testing DB connection...");
+    await db.execute(sql`SELECT 1`);
+    console.log("✅ DB connected");
+  } catch (err) {
+    console.error("💥 DB connection failed:", err);
+    process.exit(1);
+  }
+
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+  });
+}
+
+void startServer();
