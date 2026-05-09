@@ -21,6 +21,10 @@ app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware);
 
+app.get("/health", (_req, res) => {
+  res.json({ ok: true });
+});
+
 const publicDir = path.join(process.cwd(), "public");
 if (fs.existsSync(publicDir)) {
   app.use(express.static(publicDir));
@@ -43,5 +47,6 @@ if (fs.existsSync(publicDir)) {
 
 
 app.listen(env.PORT, () => {
-  console.log(`Server is running on port ${env.PORT}`);
-});
+  console.log("Listening on port:", env.PORT);
+  }
+);
