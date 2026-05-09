@@ -8,8 +8,7 @@ COPY frontend/ ./
 # Empty = browser calls /api on the same host as the page (same domain as Express).
 ENV VITE_API_URL=
 # Public Clerk key (safe to pass as build-arg; it is embedded in client JS anyway)
-ARG VITE_CLERK_PUBLISHABLE_KEY
-ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_CLERK_PUBLISHABLE_KEY=pk_test_d2FybS1ob3JzZS03Ni5jbGVyay5hY2NvdW50cy5kZXYk
 RUN npm install --no-audit --no-fund \
   && npm run build
 
