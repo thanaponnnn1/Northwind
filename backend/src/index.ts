@@ -5,7 +5,6 @@ import { getEnv } from "./lib/env";
 import { clerkWebhookHandler } from "./webhooks/clerk";
 import path from "path";
 import fs from "fs";
-import { ne } from "drizzle-orm";
 
 const env = getEnv();
 const app = express();
