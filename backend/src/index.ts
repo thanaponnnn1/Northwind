@@ -5,6 +5,7 @@ import { getEnv } from "./lib/env";
 import { clerkWebhookHandler } from "./webhooks/clerk";
 import path from "path";
 import fs from "fs";
+import "dotenv/config";
 
 
 const env = getEnv();
@@ -29,7 +30,7 @@ const publicDir = path.join(process.cwd(), "public");
 if (fs.existsSync(publicDir)) {
   app.use(express.static(publicDir));
 
-  app.get("(.*)", (req, res, next) => {
+  app.get("/{*any}", (req, res, next) => {
     if (req.method !== "GET" && req.method !== "HEAD") {
       next();
       return;
@@ -40,12 +41,12 @@ if (fs.existsSync(publicDir)) {
       return;
     }
 
-    res.sendFile(path.join(publicDir, "index.html"));
+    res.sendFile(path.join(publicDir, "index.html"), (err) => next(err));
   });
 }
 
 
 
-app.listen(env.PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server is ready at http://0.0.0.0:${env.PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`Server is running on port ${env.PORT}`);
 });
