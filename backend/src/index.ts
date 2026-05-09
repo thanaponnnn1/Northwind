@@ -71,20 +71,19 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-// ✅ ทดสอบ DB ก่อน start server
 async function startServer() {
   try {
-    console.log("🔌 Testing DB connection...");
     await db.execute(sql`SELECT 1`);
     console.log("✅ DB connected");
+    
+    // สำคัญ: ต้องใส่ 0.0.0.0 เพื่อให้ Docker/Render มองเห็น
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`✅ Server is running on port ${PORT}`);
+    });
   } catch (err) {
     console.error("💥 DB connection failed:", err);
     process.exit(1);
   }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ Server is running on port ${PORT}`);
-  });
 }
 
 void startServer();
