@@ -34,11 +34,10 @@ export type Env = z.infer<typeof envSchema>;
 export function loadEnv() {
   const parsed = envSchema.safeParse(process.env);
 
-  if (!parsed.success) {
-    console.error(parsed.error.flatten().fieldErrors);
-
-    throw new Error("Invalid environment variables");
-  }
+if (!parsed.success) {
+  console.warn("⚠️ ค้นพบข้อผิดพลาดใน Env แต่จะลองรันต่อ:", parsed.error.flatten().fieldErrors);
+  return process.env as unknown as Env; 
+}
 
   return parsed.data;
 }

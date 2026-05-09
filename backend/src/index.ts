@@ -46,7 +46,6 @@ if (fs.existsSync(publicDir)) {
 
 
 
-app.listen(env.PORT, () => {
-  console.log("Listening on port:", env.PORT);
-  }
-);
+app.listen(env.PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server is ready at http://0.0.0.0:${env.PORT}`);
+});
